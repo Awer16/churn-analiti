@@ -84,9 +84,6 @@ select {
 }
 
 .nav {
-  position: sticky;
-  top: 0;
-  z-index: 10;
   backdrop-filter: blur(18px);
   background: color-mix(in srgb, var(--bg) 82%, transparent);
   border-bottom: 1px solid var(--line);
@@ -948,10 +945,35 @@ html[data-theme="light"] .status-active {
   .nav-links {
     order: 3;
     width: 100%;
-    justify-content: flex-start;
-    gap: 12px;
-    padding-top: 8px;
+    justify-content: center;
+    gap: 16px;
+    padding-top: 10px;
     border-top: 1px solid var(--line);
+  }
+
+  .nav-links .muted-link {
+    font-weight: 600;
+    color: var(--text);
+    font-size: 15px;
+    padding: 6px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+    transition: all 0.2s ease;
+  }
+
+  html[data-theme="light"] .nav-links .muted-link {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+  }
+
+  .nav-links .muted-link:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent);
+  }
+
+  html[data-theme="light"] .nav-links .muted-link:hover {
+    background: rgba(0, 0, 0, 0.08);
   }
 
   .nav-actions {

@@ -84,9 +84,7 @@ export default function ProfilePage() {
     }
   }, [token]);
 
-  async function onUpdateProfile(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    event.stopPropagation();
+  async function onUpdateProfile() {
     setSaving(true);
     setError("");
     setSuccess("");
@@ -152,7 +150,7 @@ export default function ProfilePage() {
             </p>
 
             {profile && (
-              <form className="auth-form" onSubmit={onUpdateProfile}>
+              <form className="auth-form" onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); }}>
                 <div className="field">
                   <label htmlFor="email">Email</label>
                   <input
@@ -191,41 +189,44 @@ export default function ProfilePage() {
 
                 {error && <div className="error">{error}</div>}
                 {success && <div className="success">{success}</div>}
-
-                <div className="profile-actions">
-                  {editing ? (
-                    <>
-                      <button
-                        type="submit"
-                        className="button button-primary"
-                        disabled={saving}
-                      >
-                        {saving ? "Сохраняем..." : "Сохранить"}
-                      </button>
-                      <button
-                        type="button"
-                        className="button button-secondary"
-                        onClick={() => {
-                          setEditing(false);
-                          setCompanyName(profile.company_name);
-                          setCompanyFullName(profile.company_full_name || "");
-                        }}
-                      >
-                        Отменить
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      type="button"
-                      className="button button-primary"
-                      onClick={() => setEditing(true)}
-                    >
-                      Редактировать
-                    </button>
-                  )}
-                </div>
               </form>
             )}
+
+            <div className="profile-actions">
+              {editing ? (
+                <>
+                  <button
+                    type="button"
+                    className="button button-primary"
+                    disabled={saving}
+                    onClick={onUpdateProfile}
+                  >
+                    {saving ? "Сохраняем..." : "Сохранить"}
+                  </button>
+                  <button
+                    type="button"
+                    className="button button-secondary"
+                    onClick={() => {
+                      setEditing(false);
+                      setCompanyName(profile?.company_name ?? "");
+                      setCompanyFullName(profile?.company_full_name ?? "");
+                      setError("");
+                      setSuccess("");
+                    }}
+                  >
+                    Отменить
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  className="button button-primary"
+                  onClick={() => setEditing(true)}
+                >
+                  Редактировать
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="dashboard-panel profile-info-panel">
