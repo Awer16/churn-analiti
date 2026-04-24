@@ -68,8 +68,10 @@ export default function ProfilePage() {
       if (response.ok) {
         const data = await response.json();
         setProfile(data);
-        setCompanyName(data.company_name);
-        setCompanyFullName(data.company_full_name || "");
+        if (!editing) {
+          setCompanyName(data.company_name);
+          setCompanyFullName(data.company_full_name || "");
+        }
       }
     } catch {
       // silently ignore
@@ -84,6 +86,7 @@ export default function ProfilePage() {
 
   async function onUpdateProfile(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    event.stopPropagation();
     setSaving(true);
     setError("");
     setSuccess("");
