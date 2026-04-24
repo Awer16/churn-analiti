@@ -136,3 +136,4 @@ docker run -d --name churnvision-frontend --network churnvision-net \
 - `visits` — количество визитов
 - `channel` — канал продаж (offline, delivery, online)
 - `product_category` — категория товара
+# churn-analiti
