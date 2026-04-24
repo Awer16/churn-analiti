@@ -1,0 +1,9 @@
+.next
+node_modules
+__pycache__
+.venv
+.env
+dist
+build
+*.pyc
+backend/uploads

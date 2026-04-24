@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: churnvision-postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-churnvision}
+      POSTGRES_USER: ${POSTGRES_USER:-churnvision}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-churnvision}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-churnvision} -d ${POSTGRES_DB:-churnvision}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: churnvision-backend
+    volumes:
+      - ./backend/app:/app/app
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-churnvision}:${POSTGRES_PASSWORD:-churnvision}@postgres:5432/${POSTGRES_DB:-churnvision}
+      FRONTEND_ORIGIN: http://localhost:3000
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: churnvision-frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - .env
+    environment:
+      BACKEND_INTERNAL_URL: http://backend:8000
+    depends_on:
+      backend:
+        condition: service_started
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
